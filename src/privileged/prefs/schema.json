@@ -1,0 +1,44 @@
+[
+  {
+    "namespace": "prefs",
+    "description": "Get various prefs",
+    "functions": [
+      {
+        "name": "getStringPref",
+        "type": "function",
+        "description": "Returns the value of a string pref",
+        "async": true,
+        "parameters": [
+          {
+            "name": "prefName",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "getIntPref",
+        "type": "function",
+        "description": "Returns the value of an int pref",
+        "async": true,
+        "parameters": [
+          {
+            "name": "prefName",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "getBoolPref",
+        "type": "function",
+        "description": "Returns the value of a bool pref",
+        "async": true,
+        "parameters": [
+          {
+            "name": "prefName",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  }
+]
