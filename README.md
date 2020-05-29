@@ -1,4 +1,4 @@
-# Normandy NextGen Study Example
+# Login Study
 
 This is based on the [2019-style Normandy add-on study](https://github.com/mozilla/normandy-nextgen-study-example).
 
