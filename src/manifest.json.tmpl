@@ -19,6 +19,14 @@
 
   "permissions": ["normandyAddonStudy", "telemetry", "cookies"],
   "experiment_apis": {
+    "extendedTelemetry": {
+      "schema": "privileged/extendedTelemetry/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "privileged/extendedTelemetry/api.js",
+        "paths": [["extendedTelemetry"]]
+      }
+    },
     "prefs": {
       "schema": "privileged/prefs/schema.json",
       "parent": {
@@ -27,7 +35,5 @@
         "paths": [["prefs"]]
       }
     }
-
-
   }
 }

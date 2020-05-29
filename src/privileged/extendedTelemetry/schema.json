@@ -1,0 +1,57 @@
+[
+  {
+    "namespace": "extendedTelemetry",
+    "description": "Get extended telemetry information",
+    "functions": [
+      {
+        "name": "msSinceProcessStart",
+        "type": "function",
+        "description": "Returns time in ms session has been active",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "profileAge",
+        "type": "function",
+        "description": "Returns age in ms of the profile",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "hasLogins",
+        "type": "function",
+        "description": "Returns a boolean indicating if the user has a Google account login saved",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "timesUsedPerMonth",
+        "type": "function",
+        "description": "Returns avg count of how many times the user logs-in to a google account per month.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "isLoggedInWithGoogle",
+        "type": "function",
+        "description": "Returns a boolean indicating if the user has a cookie implying they are currently logged into Google.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "hasAllowCookieExceptions",
+        "type": "function",
+        "description": "Returns a boolean indicating if the user has set an exception allowing cookies.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "hasBlockCookieExceptions",
+        "type": "function",
+        "description": "Returns a boolean indicating if the user has set an exception blocking cookies.",
+        "async": true,
+        "parameters": []
+      }
+    ]
+  }
+]
