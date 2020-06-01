@@ -51,6 +51,34 @@
         "description": "Returns a boolean indicating if the user has set an exception blocking cookies.",
         "async": true,
         "parameters": []
+      },
+      {
+        "name": "getOldestCookieAgeInDays",
+        "type": "function",
+        "description": "Returns the total number of days old the oldest cookie is, 0 if same day, null if no cookies.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "getActiveAddons",
+        "type": "function",
+        "description": "Returns collection of the names and ids of all active addons.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "defaultSearchEngineIsGoogle",
+        "type": "function",
+        "description": "Returns boolean indicating if Google is the default search engine.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "defaultPrivateSearchEngineIsGoogle",
+        "type": "function",
+        "description": "Returns boolean indicating if Google is the default private search engine.",
+        "async": true,
+        "parameters": []
       }
     ]
   }

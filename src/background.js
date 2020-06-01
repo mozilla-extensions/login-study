@@ -10,7 +10,6 @@ const calculateProfileAgeInDays = (creationDate) => {
   return Math.floor((Date.now() - creationDate) / MILLISECONDS_PER_DAY);
 };
 
-
 browser.browserAction.onClicked.addListener(async () => {
   const sendTelemetry = async () => {
 
@@ -28,6 +27,10 @@ browser.browserAction.onClicked.addListener(async () => {
     const google_accounts_cookie_present = await browser.extendedTelemetry.isLoggedInWithGoogle();
     const has_allow_cookie_exceptions = await browser.extendedTelemetry.hasAllowCookieExceptions();
     const has_block_cookie_exceptions = await browser.extendedTelemetry.hasBlockCookieExceptions();
+    const cookies_oldest_days_old = await browser.extendedTelemetry.getOldestCookieAgeInDays();
+    const activeAddons = await browser.extendedTelemetry.getActiveAddons();
+    const default_search_engine_is_google = await browser.extendedTelemetry.defaultSearchEngineIsGoogle();
+    const default_private_search_engine_is_google = await browser.extendedTelemetry.defaultPrivateSearchEngineIsGoogle();
 
 
     const payload = {
@@ -45,6 +48,10 @@ browser.browserAction.onClicked.addListener(async () => {
       google_accounts_cookie_present,
       has_allow_cookie_exceptions,
       has_block_cookie_exceptions,
+      cookies_oldest_days_old,
+      activeAddons,
+      default_search_engine_is_google,
+      default_private_search_engine_is_google,
     };
 
 
