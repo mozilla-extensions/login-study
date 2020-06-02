@@ -12,7 +12,6 @@ const calculateProfileAgeInDays = (creationDate) => {
 
 browser.browserAction.onClicked.addListener(async () => {
   const sendTelemetry = async () => {
-
     const password_manager_enabled = await browser.prefs.getBoolPref("signon.rememberSignons");
     const browser_privatebrowsing_autostart = await browser.prefs.getBoolPref("browser.privatebrowsing.autostart");
     const network_cookie_lifetime_policy = await browser.prefs.getIntPref("network.cookie.lifetimePolicy");
@@ -25,13 +24,17 @@ browser.browserAction.onClicked.addListener(async () => {
     const logins_accounts = await browser.extendedTelemetry.hasLogins();
     const logins_accounts_uses_per_month = await browser.extendedTelemetry.timesUsedPerMonth();
     const google_accounts_cookie_present = await browser.extendedTelemetry.isLoggedInWithGoogle();
+    const google_accounts_cookie_days_remaining = await browser.extendedTelemetry.googleCookieDaysRemaining();
     const has_allow_cookie_exceptions = await browser.extendedTelemetry.hasAllowCookieExceptions();
     const has_block_cookie_exceptions = await browser.extendedTelemetry.hasBlockCookieExceptions();
     const cookies_oldest_days_old = await browser.extendedTelemetry.getOldestCookieAgeInDays();
     const activeAddons = await browser.extendedTelemetry.getActiveAddons();
     const default_search_engine_is_google = await browser.extendedTelemetry.defaultSearchEngineIsGoogle();
     const default_private_search_engine_is_google = await browser.extendedTelemetry.defaultPrivateSearchEngineIsGoogle();
-
+    const accounts_days_visited_per_month = await browser.extendedTelemetry.countVisitsToAccountsPage();
+    const has_browser_search_with_ads =  await browser.extendedTelemetry.searchWithAds();
+    const has_browser_search_ad_clicks = await browser.extendedTelemetry.searchClickAds();
+    const history_oldest_days_old = await browser.extendedTelemetry.getOldestHistoryAgeInDays();
 
     const payload = {
       password_manager_enabled,
@@ -46,12 +49,17 @@ browser.browserAction.onClicked.addListener(async () => {
       logins_accounts,
       logins_accounts_uses_per_month,
       google_accounts_cookie_present,
+      google_accounts_cookie_days_remaining,
       has_allow_cookie_exceptions,
       has_block_cookie_exceptions,
       cookies_oldest_days_old,
       activeAddons,
       default_search_engine_is_google,
       default_private_search_engine_is_google,
+      accounts_days_visited_per_month,
+      has_browser_search_with_ads,
+      has_browser_search_ad_clicks,
+      history_oldest_days_old,
     };
 
 

@@ -39,6 +39,13 @@
         "parameters": []
       },
       {
+        "name": "googleCookieDaysRemaining",
+        "type": "function",
+        "description": "Returns the days remaining on the google login cookies, returns the smallest if there is any difference.",
+        "async": true,
+        "parameters": []
+      },
+      {
         "name": "hasAllowCookieExceptions",
         "type": "function",
         "description": "Returns a boolean indicating if the user has set an exception allowing cookies.",
@@ -77,6 +84,34 @@
         "name": "defaultPrivateSearchEngineIsGoogle",
         "type": "function",
         "description": "Returns boolean indicating if Google is the default private search engine.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "countVisitsToAccountsPage",
+        "type": "function",
+        "description": "Returns how often has this user visited the Google account login/signup domain in the past 28 days, rounded to 1 decimal",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "searchWithAds",
+        "type": "function",
+        "description": "Returns boolean indicating if this user has executed a search with ads in the past 28 days",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "searchClickAds",
+        "type": "function",
+        "description": "Returns boolean indicating if this user has executed a search and clicked on ads in the past 28 days",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "getOldestHistoryAgeInDays",
+        "type": "function",
+        "description": "Returns the total number of days old the oldest history entry is, 0 if same day, null if no cookies.",
         "async": true,
         "parameters": []
       }
