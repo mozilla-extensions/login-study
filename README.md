@@ -36,3 +36,26 @@ build, and the preference `extensions.legacy.enabled` must be set to true.
 - Select `Normandy-login-study` and the timestamp you want to inspect.
 - You should see the custom ping data. 
 
+- Note: in order to use `browser.normandyAddonStudy.endStudy`, you must create the study as if it has been added by Normandy. Run the following code in your browser console before trying to end the study.
+```
+const { AddonStudies } = ChromeUtils.import(
+  "resource://normandy/lib/AddonStudies.jsm",
+);
+await AddonStudies.add({
+  recipeId: 42,
+  slug: "test",
+  userFacingName: "Test",
+  userFacingDescription: "Description",
+  branch: "red",
+  active: true,
+  addonId: "normandy-nextgen-study-example-a@mozilla.org",
+  addonUrl:
+    "https://example.com/normandy-nextgen-study-example-a@mozilla.org-signed.xpi",
+  addonVersion: "0.1.0",
+  extensionApiId: 1,
+  extensionHash: "badhash",
+  hashAlgorithm: "sha256",
+  studyStartDate: new Date(),
+  studyEndDate: null,
+});
+```
