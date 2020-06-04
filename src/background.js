@@ -1,7 +1,5 @@
 "use strict";
 
-// const 
-
 const sendTelemetry = async () => {
   const password_manager_enabled = await browser.prefs.getBoolPref("signon.rememberSignons");
   const browser_privatebrowsing_autostart = await browser.prefs.getBoolPref("browser.privatebrowsing.autostart");
@@ -55,7 +53,8 @@ const sendTelemetry = async () => {
 
   // addClientId defaults to false, being explicit.
   browser.telemetry.submitPing("normandy-login-study", payload, {addClientId: false});
-  browser.normandyAddonStudy.endStudy("study-finished-successfully");
+  // this fails since it is not installed with Normandy at the moment. Will need to test with the real thing.
+  // browser.normandyAddonStudy.endStudy("study-finished-successfully");
 };
 
 function handleAlarm(alarmInfo) {
@@ -64,11 +63,6 @@ function handleAlarm(alarmInfo) {
   }
 }
 
-function telemetryCollected() {
-
-  console.log("telemetry successfully collected")
-}
-
 browser.alarms.onAlarm.addListener(handleAlarm);
 // Delay sending the telemetry until after the browser has finished starting up.
-browser.alarms.create("send-telemetry", { delayInMinutes: 5 });
+browser.alarms.create("send-telemetry", { delayInMinutes: 2 });

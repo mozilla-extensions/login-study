@@ -181,7 +181,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
           for (const outerPing of pingList) {
             if (outerPing.type === "main") {
               const ping = await TelemetryArchive.promiseArchivedPingById(outerPing.id);
-              if (ping.payload.processes && ping.payload.processes.parent.scalars["browser.search.with_ads"]) {
+              if (ping.payload.processes && ping.payload.processes.parent.keyedScalars["browser.search.with_ads"]) {
                 return true;
               }
               // Only check historical pings up to two weeks in the past
@@ -201,7 +201,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
           for (const outerPing of pingList) {
             if (outerPing.type === "main") {
               const ping = await TelemetryArchive.promiseArchivedPingById(outerPing.id);
-              if (ping.payload.processes && ping.payload.processes.parent.scalars["browser.search.ad_clicks"]) {
+              if (ping.payload.processes && ping.payload.processes.parent.keyedScalars["browser.search.ad_clicks"]) {
                 return true;
               }
               // Only check historical pings up to two weeks in the past
