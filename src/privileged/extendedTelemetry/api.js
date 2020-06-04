@@ -16,7 +16,6 @@ const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const SECONDS_PER_TWO_WEEKS = 2 * 7 * 24 * 60 * 60;
 const ALLOW_COOKIE_EXCEPTION = 1;
 const BLOCK_COOKIE_EXCEPTION = 2;
-// const ALLOW_COOKIE_SESSION = 8; TODO: are we interested in this?
 
 // Moved to a helper function so we only get this once. This checks during startup, and caches the result.
 const checkHasCookieExceptions = () => {
@@ -31,8 +30,9 @@ const msToDays = (time) => {
   return Math.floor(time / MILLISECONDS_PER_DAY);
 };
 
-const roundToSpecificDecimal = (number, decimal) => {
-  return Math.round(number * decimal) / decimal;
+// Note: should we consider profile reset date?
+const calculateProfileAgeInDays = (creationDate) => {
+  return Math.floor((Date.now() - creationDate) / MILLISECONDS_PER_DAY);
 };
 
 this.extendedTelemetry = class extends ExtensionAPI {
@@ -46,11 +46,13 @@ this.extendedTelemetry = class extends ExtensionAPI {
     const self = this;
     return {
       extendedTelemetry: {
-        msSinceProcessStart: Services.telemetry.msSinceProcessStart,
+        async daysSinceProcessStart() {
+          return msToDays(Services.telemetry.msSinceProcessStart);
+        },
 
         async profileAge() {
           const profile = await ProfileAge();
-          return await profile.created;
+          return calculateProfileAgeInDays(await profile.created);
         },
 
         async hasLogins() {
@@ -137,28 +139,42 @@ this.extendedTelemetry = class extends ExtensionAPI {
           return (TelemetryEnvironment.currentEnvironment.settings.defaultSearchEngineData.name === "Google");
         },
 
-        // TODO fix up this query.
         async countVisitsToAccountsPage() {
           const query = async function(db) {
+            // To avoid divide by 0 issues, the youngest profile will be counted as 1 day old.
+            // Select count of days which included a visit to accounts.google.com
+            // Calculate the how many days ago oldest day recorded in this users history is
+            // Divide the days including a visit by the total days,
+            // Multiply by 20 to get a number between 0 and 28, round to two decimal places.
             const rows = await db.executeCached(
-              `SELECT SUM(visit_count)
-              as visits_per_month
-              FROM moz_places p
-              LEFT JOIN moz_historyvisits h
-              ON h.place_id = p.id
-              WHERE rev_host
-              LIKE 'moc.elgoog.stnuocca.';`);
+              `SELECT ROUND(
+                (SELECT CAST(COUNT(DISTINCT v.visit_date / 1000 / 1000 / 86400) AS FLOAT)
+                AS distinct_days
+                FROM moz_historyvisits v
+                JOIN moz_places h ON h.id = v.place_id
+                WHERE h.rev_host LIKE "moc.elgoog.stnuocca.")
+                /
+                (WITH totalDays AS
+                  (SELECT
+                  CAST(julianday('now') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch') AS FLOAT)
+                  AS history_oldest_days_old
+                  FROM moz_historyvisits
+                  LIMIT 1)
+                SELECT CAST( history_oldest_days_old as int ) + ( history_oldest_days_old > CAST( history_oldest_days_old as int ))
+                FROM totalDays)
+                * 28 , 2) AS visits_per_month;`);
             return rows;
           };
 
           const results = await PlacesUtils.withConnectionWrapper("Login Study: fetch login count", query);
           if (results[0].getResultByName("visits_per_month")) {
-            return (roundToSpecificDecimal(results[0].getResultByName("visits_per_month"), 10));
+            return (results[0].getResultByName("visits_per_month"));
           }
-          return 0.0;
+          return 0.00;
         },
 
-        // TODO consider requestIdleCallback // note: test this more thoroughly
+        // TODO consider requestIdleCallback
+        // Note, this is checking historical telemetry pings, it does not check the current ping.
         async searchWithAds() {
           const pingList = await TelemetryArchive.promiseArchivedPingList();
           const currentTimestamp = Date.now();
@@ -177,7 +193,8 @@ this.extendedTelemetry = class extends ExtensionAPI {
           return false;
         },
 
-        // TODO consider requestIdleCallback // note: test this more thoroughly
+        // TODO consider requestIdleCallback
+        // Note, this is checking historical telemetry pings, it does not check the current ping.
         async searchClickAds() {
           const pingList = await TelemetryArchive.promiseArchivedPingList();
           const currentTimestamp = Date.now();
@@ -202,7 +219,8 @@ this.extendedTelemetry = class extends ExtensionAPI {
             const rows = await db.executeCached(
               `SELECT CAST(julianday('now') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch') as int)
               AS history_oldest_days_old
-              FROM moz_historyvisits;`);
+              FROM moz_historyvisits
+              LIMIT 1;`);
             return rows;
           };
 

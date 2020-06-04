@@ -4,7 +4,7 @@
     "description": "Get extended telemetry information",
     "functions": [
       {
-        "name": "msSinceProcessStart",
+        "name": "daysSinceProcessStart",
         "type": "function",
         "description": "Returns time in ms session has been active",
         "async": true,

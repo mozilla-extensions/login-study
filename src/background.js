@@ -1,15 +1,6 @@
 "use strict";
 
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-
-const convertMSToDays = (time) => {
-  return Math.floor(time / MILLISECONDS_PER_DAY);
-};
-
-// Note: should we consider profile reset date?
-const calculateProfileAgeInDays = (creationDate) => {
-  return Math.floor((Date.now() - creationDate) / MILLISECONDS_PER_DAY);
-};
+// const 
 
 const sendTelemetry = async () => {
   const password_manager_enabled = await browser.prefs.getBoolPref("signon.rememberSignons");
@@ -19,8 +10,8 @@ const sendTelemetry = async () => {
   const privacy_clear_on_shutdown_cookies = await browser.prefs.getBoolPref("privacy.clearOnShutdown.cookies");
   const network_cookie_cookie_behavior = await browser.prefs.getIntPref("network.cookie.cookieBehavior");
   const browser_startup_page = await browser.prefs.getIntPref("browser.startup.page");
-  const session_days_old = convertMSToDays(await browser.extendedTelemetry.msSinceProcessStart());
-  const profile_days_old = calculateProfileAgeInDays(await browser.extendedTelemetry.profileAge());
+  const session_days_old = await browser.extendedTelemetry.daysSinceProcessStart();
+  const profile_days_old = await browser.extendedTelemetry.profileAge();
   const logins_accounts = await browser.extendedTelemetry.hasLogins();
   const logins_accounts_uses_per_month = await browser.extendedTelemetry.timesUsedPerMonth();
   const google_accounts_cookie_present = await browser.extendedTelemetry.isLoggedInWithGoogle();
@@ -71,6 +62,11 @@ function handleAlarm(alarmInfo) {
   if (alarmInfo.name === "send-telemetry" ) {
     sendTelemetry();
   }
+}
+
+function telemetryCollected() {
+
+  console.log("telemetry successfully collected")
 }
 
 browser.alarms.onAlarm.addListener(handleAlarm);
