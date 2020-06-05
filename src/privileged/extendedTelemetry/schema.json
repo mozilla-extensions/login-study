@@ -39,9 +39,9 @@
         "parameters": []
       },
       {
-        "name": "googleCookieDaysRemaining",
+        "name": "googleCookieDaysOld",
         "type": "function",
-        "description": "Returns the days remaining on the google login cookies, returns the smallest if there is any difference.",
+        "description": "Returns the age in days of the google login cookies, returns null if no cookie",
         "async": true,
         "parameters": []
       },

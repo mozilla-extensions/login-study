@@ -13,7 +13,7 @@ const sendTelemetry = async () => {
   const logins_accounts = await browser.extendedTelemetry.hasLogins();
   const logins_accounts_uses_per_month = await browser.extendedTelemetry.timesUsedPerMonth();
   const google_accounts_cookie_present = await browser.extendedTelemetry.isLoggedInWithGoogle();
-  const google_accounts_cookie_days_remaining = await browser.extendedTelemetry.googleCookieDaysRemaining();
+  const google_accounts_cookie_days_old = await browser.extendedTelemetry.googleCookieDaysOld();
   const has_allow_cookie_exceptions = await browser.extendedTelemetry.hasAllowCookieExceptions();
   const has_block_cookie_exceptions = await browser.extendedTelemetry.hasBlockCookieExceptions();
   const cookies_oldest_days_old = await browser.extendedTelemetry.getOldestCookieAgeInDays();
@@ -38,7 +38,7 @@ const sendTelemetry = async () => {
     logins_accounts,
     logins_accounts_uses_per_month,
     google_accounts_cookie_present,
-    google_accounts_cookie_days_remaining,
+    google_accounts_cookie_days_old,
     has_allow_cookie_exceptions,
     has_block_cookie_exceptions,
     cookies_oldest_days_old,

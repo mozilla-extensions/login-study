@@ -74,25 +74,26 @@ this.extendedTelemetry = class extends ExtensionAPI {
           const result = cookies.some((cookie) => {
             // When both __Secure-3PSID or SID cookies are gone, the user gets logged out, when at least one is present, they will remain logged in.
             // If "HSID" cookie is gone, the user will be logged out.
-            // All of these cookies seem to expire after 2 years.
+            // All of these cookies expire after 2 years.
             return cookie.name === "__Secure-3PSID" || cookie.name === "SID" || cookie.name === "HSID";
           });
           return result;
         },
 
         // Returns null if no cookie.
-        async googleCookieDaysRemaining() {
+        async googleCookieDaysOld() {
           const currentTimestamp = Date.now();
           const cookies = Services.cookies.getCookiesFromHost("accounts.google.com", {});
           const googleCookie = cookies.find((cookie) => {
             // When both __Secure-3PSID or SID cookies are gone, the user gets logged out, when at least one is present, they will remain logged in.
             // If "HSID" cookie is gone, the user will be logged out.
-            // All of these cookies seem to expire after 2 years.
+            // All of these cookies expire after 2 years.
             return cookie.name === "__Secure-3PSID" || cookie.name === "SID" || cookie.name === "HSID";
           });
+
           if (googleCookie) {
             // Convert exiry to ms, then subtract date created.
-            return msToDays((googleCookie.expiry * 1000) - currentTimestamp);
+            return msToDays(currentTimestamp - (googleCookie.creationTime / 1000));
           }
           return null;
         },
