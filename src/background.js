@@ -20,8 +20,9 @@ const sendTelemetry = async () => {
   const default_search_engine_is_google = await browser.extendedTelemetry.defaultSearchEngineIsGoogle();
   const default_private_search_engine_is_google = await browser.extendedTelemetry.defaultPrivateSearchEngineIsGoogle();
   const accounts_days_visited_per_month = await browser.extendedTelemetry.countVisitsToAccountsPage();
-  const { has_browser_search_with_ads, has_browser_search_ad_clicks} = await browser.extendedTelemetry.searchWithAdsPlusClick();
+  const { has_browser_search_with_ads, has_browser_search_ad_clicks } = await browser.extendedTelemetry.searchWithAdsPlusClick();
   const history_oldest_days_old = await browser.extendedTelemetry.getOldestHistoryAgeInDays();
+  const history_average_days_per_month = await await browser.extendedTelemetry.getAverageHistoryDaysPerMonth();
 
   const payload = {
     password_manager_enabled,
@@ -47,6 +48,7 @@ const sendTelemetry = async () => {
     has_browser_search_with_ads,
     has_browser_search_ad_clicks,
     history_oldest_days_old,
+    history_average_days_per_month,
   };
 
   // addClientId defaults to false, being explicit.

@@ -210,6 +210,38 @@ this.extendedTelemetry = class extends ExtensionAPI {
           // This returns "null" if no results, 0 if same-day.
           return results[0].getResultByName("history_oldest_days_old");
         },
+
+        async getAverageHistoryDaysPerMonth() {
+          const query = async function(db) {
+            // To avoid divide by 0 issues, the youngest profile will be counted as 1 day old.
+            // Select count of days which have a history entry,
+            // calculate how many days ago the oldest day recorded in this user's history is,
+            // divide days which included a visit by the total days,
+            // multiply by 28 to get a number between 0 and 28, round to two decimal places.
+            const rows = await db.executeCached(
+              `SELECT ROUND(
+                (SELECT CAST(COUNT(DISTINCT visit_date / 1000 / 1000 / 86400) AS FLOAT)
+                AS distinct_days
+                FROM moz_historyvisits)
+                /
+                (WITH totalDays AS
+                  (SELECT
+                  CAST(julianday('now') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch') AS FLOAT)
+                  AS history_oldest_days_old
+                  FROM moz_historyvisits
+                  LIMIT 1)
+                SELECT CAST( history_oldest_days_old as int ) + ( history_oldest_days_old > CAST( history_oldest_days_old as int ))
+                FROM totalDays)
+                * 28 , 2) AS visits_per_month;`);
+            return rows;
+          };
+
+          const results = await PlacesUtils.withConnectionWrapper("Login Study: fetch login count", query);
+          if (results[0].getResultByName("visits_per_month")) {
+            return (results[0].getResultByName("visits_per_month"));
+          }
+          return 0.00;
+        },
       },
     };
   }
