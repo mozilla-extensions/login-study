@@ -60,8 +60,10 @@ await AddonStudies.add({
 });
 ```
 
-## Example Payload
+## Example Payload on a New Profile
 ```
+
+
 {
   "password_manager_enabled": false,
   "browser_privatebrowsing_autostart": false,

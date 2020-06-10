@@ -6,14 +6,14 @@
       {
         "name": "daysSinceProcessStart",
         "type": "function",
-        "description": "Returns time in ms session has been active",
+        "description": "Returns time in days this session has been active",
         "async": true,
         "parameters": []
       },
       {
         "name": "profileAge",
         "type": "function",
-        "description": "Returns age in ms of the profile",
+        "description": "Returns age in in days of the profile",
         "async": true,
         "parameters": []
       },
@@ -32,16 +32,9 @@
         "parameters": []
       },
       {
-        "name": "isLoggedInWithGoogle",
+        "name": "hasGoogleCookieAndAge",
         "type": "function",
-        "description": "Returns a boolean indicating if the user has a cookie implying they are currently logged into Google.",
-        "async": true,
-        "parameters": []
-      },
-      {
-        "name": "googleCookieDaysOld",
-        "type": "function",
-        "description": "Returns the age in days of the google login cookies, returns null if no cookie",
+        "description": "Returns an object containing a boolean indicating if the user has a cookie implying they are currently logged into Google, and containing the age of that cookie. ",
         "async": true,
         "parameters": []
       },
@@ -95,16 +88,9 @@
         "parameters": []
       },
       {
-        "name": "searchWithAds",
+        "name": "searchWithAdsPlusClick",
         "type": "function",
-        "description": "Returns boolean indicating if this user has executed a search with ads in the past 28 days",
-        "async": true,
-        "parameters": []
-      },
-      {
-        "name": "searchClickAds",
-        "type": "function",
-        "description": "Returns boolean indicating if this user has executed a search and clicked on ads in the past 28 days",
+        "description": "Returns an object containing booleans 'with_ads' and 'ad_clicks' indicating if this user has executed a search with ads and clicked an ad in the past 14 days",
         "async": true,
         "parameters": []
       },

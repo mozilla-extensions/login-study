@@ -12,8 +12,7 @@ const sendTelemetry = async () => {
   const profile_days_old = await browser.extendedTelemetry.profileAge();
   const logins_accounts = await browser.extendedTelemetry.hasLogins();
   const logins_accounts_uses_per_month = await browser.extendedTelemetry.timesUsedPerMonth();
-  const google_accounts_cookie_present = await browser.extendedTelemetry.isLoggedInWithGoogle();
-  const google_accounts_cookie_days_old = await browser.extendedTelemetry.googleCookieDaysOld();
+  const { google_accounts_cookie_present, google_accounts_cookie_days_old } = await browser.extendedTelemetry.hasGoogleCookieAndAge();
   const has_allow_cookie_exceptions = await browser.extendedTelemetry.hasAllowCookieExceptions();
   const has_block_cookie_exceptions = await browser.extendedTelemetry.hasBlockCookieExceptions();
   const cookies_oldest_days_old = await browser.extendedTelemetry.getOldestCookieAgeInDays();
@@ -21,8 +20,7 @@ const sendTelemetry = async () => {
   const default_search_engine_is_google = await browser.extendedTelemetry.defaultSearchEngineIsGoogle();
   const default_private_search_engine_is_google = await browser.extendedTelemetry.defaultPrivateSearchEngineIsGoogle();
   const accounts_days_visited_per_month = await browser.extendedTelemetry.countVisitsToAccountsPage();
-  const has_browser_search_with_ads =  await browser.extendedTelemetry.searchWithAds();
-  const has_browser_search_ad_clicks = await browser.extendedTelemetry.searchClickAds();
+  const { has_browser_search_with_ads, has_browser_search_ad_clicks} = await browser.extendedTelemetry.searchWithAdsPlusClick();
   const history_oldest_days_old = await browser.extendedTelemetry.getOldestHistoryAgeInDays();
 
   const payload = {
@@ -53,8 +51,10 @@ const sendTelemetry = async () => {
 
   // addClientId defaults to false, being explicit.
   browser.telemetry.submitPing("normandy-login-study", payload, {addClientId: false});
-  // this fails since it is not installed with Normandy at the moment. Will need to test with the real thing.
-  // browser.normandyAddonStudy.endStudy("study-finished-successfully");
+
+  // Uninstall the addon once the telemetry has been submitted.
+  // This fails since it is not installed with Normandy at the moment. We will need to test on their staging server.
+  browser.normandyAddonStudy.endStudy("study-finished-successfully");
 };
 
 function handleAlarm(alarmInfo) {
@@ -65,4 +65,4 @@ function handleAlarm(alarmInfo) {
 
 browser.alarms.onAlarm.addListener(handleAlarm);
 // Delay sending the telemetry until after the browser has finished starting up.
-browser.alarms.create("send-telemetry", { delayInMinutes: 2 });
+browser.alarms.create("send-telemetry", { delayInMinutes: 1 });

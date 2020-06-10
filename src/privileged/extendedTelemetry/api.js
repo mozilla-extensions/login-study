@@ -30,7 +30,6 @@ const msToDays = (time) => {
   return Math.floor(time / MILLISECONDS_PER_DAY);
 };
 
-// Note: should we consider profile reset date?
 const calculateProfileAgeInDays = (creationDate) => {
   return Math.floor((Date.now() - creationDate) / MILLISECONDS_PER_DAY);
 };
@@ -69,33 +68,25 @@ this.extendedTelemetry = class extends ExtensionAPI {
           return 0;
         },
 
-        async isLoggedInWithGoogle() {
-          const cookies = Services.cookies.getCookiesFromHost("accounts.google.com", {});
-          const result = cookies.some((cookie) => {
-            // When both __Secure-3PSID or SID cookies are gone, the user gets logged out, when at least one is present, they will remain logged in.
-            // If "HSID" cookie is gone, the user will be logged out.
-            // All of these cookies expire after 2 years.
-            return cookie.name === "__Secure-3PSID" || cookie.name === "SID" || cookie.name === "HSID";
-          });
-          return result;
-        },
-
-        // Returns null if no cookie.
-        async googleCookieDaysOld() {
+        async hasGoogleCookieAndAge() {
+          let result = {
+            google_accounts_cookie_present: false,
+            google_accounts_cookie_days_old: null,
+          };
           const currentTimestamp = Date.now();
-          const cookies = Services.cookies.getCookiesFromHost("accounts.google.com", {});
+          const cookies = Services.cookies.getCookiesFromHost("google.com", {}).filter(c => c.host === "accounts.google.com");
           const googleCookie = cookies.find((cookie) => {
-            // When both __Secure-3PSID or SID cookies are gone, the user gets logged out, when at least one is present, they will remain logged in.
-            // If "HSID" cookie is gone, the user will be logged out.
-            // All of these cookies expire after 2 years.
-            return cookie.name === "__Secure-3PSID" || cookie.name === "SID" || cookie.name === "HSID";
+            // LSID cookie exists when a user is logged in to any Google product.
+            // Note: this cookie can be deleted (perhaps through other means, excluding a log out action) and the user will not be
+            // logged out of any google product, but will have to reauthenticate if they log into a different google product.
+            // This cookie gets deleted if a user actively logs out.
+            return cookie.name === "LSID";
           });
-
           if (googleCookie) {
             // Convert exiry to ms, then subtract date created.
             return msToDays(currentTimestamp - (googleCookie.creationTime / 1000));
           }
-          return null;
+          return result;
         },
 
         async hasAllowCookieExceptions() {
@@ -143,10 +134,10 @@ this.extendedTelemetry = class extends ExtensionAPI {
         async countVisitsToAccountsPage() {
           const query = async function(db) {
             // To avoid divide by 0 issues, the youngest profile will be counted as 1 day old.
-            // Select count of days which included a visit to accounts.google.com
-            // Calculate the how many days ago oldest day recorded in this users history is
-            // Divide the days including a visit by the total days,
-            // Multiply by 20 to get a number between 0 and 28, round to two decimal places.
+            // Select count of days which included a visit to accounts.google.com,
+            // calculate how many days ago the oldest day recorded in this user's history is,
+            // divide days which included a visit by the total days,
+            // multiply by 28 to get a number between 0 and 28, round to two decimal places.
             const rows = await db.executeCached(
               `SELECT ROUND(
                 (SELECT CAST(COUNT(DISTINCT v.visit_date / 1000 / 1000 / 86400) AS FLOAT)
@@ -174,44 +165,34 @@ this.extendedTelemetry = class extends ExtensionAPI {
           return 0.00;
         },
 
-        // TODO consider requestIdleCallback
         // Note, this is checking historical telemetry pings, it does not check the current ping.
-        async searchWithAds() {
+        async searchWithAdsPlusClick() {
           const pingList = await TelemetryArchive.promiseArchivedPingList();
           const currentTimestamp = Date.now();
+          let results = {
+            has_browser_search_with_ads: false,
+            has_browser_search_ad_clicks: false,
+          };
           for (const outerPing of pingList) {
             if (outerPing.type === "main") {
               const ping = await TelemetryArchive.promiseArchivedPingById(outerPing.id);
               if (ping.payload.processes && ping.payload.processes.parent.keyedScalars["browser.search.with_ads"]) {
-                return true;
+                results.has_browser_search_with_ads = true;
               }
-              // Only check historical pings up to two weeks in the past
-              if (currentTimestamp - ping.timestampCreated > SECONDS_PER_TWO_WEEKS) {
-                return false;
-              }
-            }
-          }
-          return false;
-        },
-
-        // TODO consider requestIdleCallback
-        // Note, this is checking historical telemetry pings, it does not check the current ping.
-        async searchClickAds() {
-          const pingList = await TelemetryArchive.promiseArchivedPingList();
-          const currentTimestamp = Date.now();
-          for (const outerPing of pingList) {
-            if (outerPing.type === "main") {
-              const ping = await TelemetryArchive.promiseArchivedPingById(outerPing.id);
               if (ping.payload.processes && ping.payload.processes.parent.keyedScalars["browser.search.ad_clicks"]) {
-                return true;
+                results.has_browser_search_ad_clicks = true;
+              }
+              // exit early if booth have been found.
+              if (results.has_browser_search_ad_clicks && results.has_browser_search_with_ads) {
+                return results;
               }
               // Only check historical pings up to two weeks in the past
               if (currentTimestamp - ping.timestampCreated > SECONDS_PER_TWO_WEEKS) {
-                return false;
+                return results;
               }
             }
           }
-          return false;
+          return results;
         },
 
         // Returns NULL if there are no history entries, 0 if oldest history is same-day.
