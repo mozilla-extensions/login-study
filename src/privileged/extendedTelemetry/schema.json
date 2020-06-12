@@ -83,7 +83,7 @@
       {
         "name": "countVisitsToAccountsPage",
         "type": "function",
-        "description": "Returns how often has this user visited the Google account login/signup domain in the past 28 days, rounded to 1 decimal.",
+        "description": "Average of how often this user visits the Google account login/signup domain each 28 days (1 month), rounded to 1 decimal.",
         "async": true,
         "parameters": []
       },
@@ -97,7 +97,7 @@
       {
         "name": "getOldestHistoryAgeInDays",
         "type": "function",
-        "description": "Returns the total number of days old the oldest history entry is, 0 if same day, null if no cookies.",
+        "description": "Returns the total number of days old the oldest history entry is, 0 if same day, null if no history.",
         "async": true,
         "parameters": []
       },

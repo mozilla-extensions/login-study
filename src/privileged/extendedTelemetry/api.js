@@ -22,14 +22,18 @@ const checkHasCookieExceptions = () => {
   return Services.perms.getAllWithTypePrefix("cookie");
 };
 
-const ageToMonths = (creationDate) => {
-  return Math.floor((Date.now() - creationDate) / MILLISECONDS_PER_MONTH);
+// Takes a ratio of times used per age-in-ms, and multiplies by ms_per_month to convert that ratio into uses per month.
+// Rounds to 1 decimal place.
+const msFrequencyToMonths = (frequency) => {
+  return Math.round((frequency * MILLISECONDS_PER_MONTH) * 10) / 10;
 };
 
+// Rounds down to the nearest day.
 const msToDays = (time) => {
   return Math.floor(time / MILLISECONDS_PER_DAY);
 };
 
+// Rounds down to the nearest day.
 const calculateProfileAgeInDays = (creationDate) => {
   return Math.floor((Date.now() - creationDate) / MILLISECONDS_PER_DAY);
 };
@@ -46,7 +50,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
     return {
       extendedTelemetry: {
         async daysSinceProcessStart() {
-          return msToDays(Services.telemetry.msSinceProcessStart);
+          return msToDays(Services.telemetry.msSinceProcessStart());
         },
 
         async profileAge() {
@@ -63,9 +67,9 @@ this.extendedTelemetry = class extends ExtensionAPI {
           const logins = Services.logins.findLogins("https://accounts.google.com", "", null).concat(Services.logins.findLogins("http://accounts.google.com", "", null));
           if (logins.length) {
             const mostUsedLogin = logins.reduce((prev, current) => { (prev.timesUsed > current.timesUsed) ? prev : current; });
-            return mostUsedLogin.timesUsed / ageToMonths(mostUsedLogin.timeCreated);
+            return msFrequencyToMonths(mostUsedLogin.timesUsed / (Date.now() - mostUsedLogin.timeCreated));
           }
-          return 0;
+          return 0.0;
         },
 
         async hasGoogleCookieAndAge() {
