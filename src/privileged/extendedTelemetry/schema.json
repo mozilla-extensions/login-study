@@ -18,7 +18,7 @@
         "parameters": []
       },
       {
-        "name": "hasLogins",
+        "name": "hasGoogleAccountsLogin",
         "type": "function",
         "description": "Returns a boolean indicating if the user has a Google account login saved.",
         "async": true,

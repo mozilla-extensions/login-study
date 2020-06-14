@@ -8,7 +8,7 @@ const { TelemetryEnvironment } = ChromeUtils.import("resource://gre/modules/Tele
 const { AddonManager } =  ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
 const { PlacesUtils } = ChromeUtils.import("resource://gre/modules/PlacesUtils.jsm");
 const { TelemetryArchive } = ChromeUtils.import("resource://gre/modules/TelemetryArchive.jsm");
-
+const { LoginHelper } = ChromeUtils.import("resource://gre/modules/LoginHelper.jsm");
 
 // One month here is 28 days
 const MILLISECONDS_PER_MONTH = 28 * 24 * 60 * 60 * 1000;
@@ -58,12 +58,15 @@ this.extendedTelemetry = class extends ExtensionAPI {
           return calculateProfileAgeInDays(await profile.created);
         },
 
-        async hasLogins() {
+        async hasGoogleAccountsLogin() {
           return (Services.logins.countLogins("https://accounts.google.com", "", null) +
           Services.logins.countLogins("http://accounts.google.com", "", null)) > 0;
         },
 
         async timesUsedPerMonth() {
+          if (LoginHelper.isMasterPasswordSet()) {
+            return 0.0;
+          }
           const logins = Services.logins.findLogins("https://accounts.google.com", "", null).concat(Services.logins.findLogins("http://accounts.google.com", "", null));
           if (logins.length) {
             const mostUsedLogin = logins.reduce((prev, current) => { (prev.timesUsed > current.timesUsed) ? prev : current; });
@@ -87,8 +90,9 @@ this.extendedTelemetry = class extends ExtensionAPI {
             return cookie.name === "LSID";
           });
           if (googleCookie) {
+            result.google_accounts_cookie_present = true;
             // Convert exiry to ms, then subtract date created.
-            return msToDays(currentTimestamp - (googleCookie.creationTime / 1000));
+            result.google_accounts_cookie_days_old = msToDays(currentTimestamp - (googleCookie.creationTime / 1000));
           }
           return result;
         },
@@ -186,7 +190,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
               if (ping.payload.processes && ping.payload.processes.parent.keyedScalars["browser.search.ad_clicks"]) {
                 results.has_browser_search_ad_clicks = true;
               }
-              // exit early if booth have been found.
+              // exit early if both have been found.
               if (results.has_browser_search_ad_clicks && results.has_browser_search_with_ads) {
                 return results;
               }

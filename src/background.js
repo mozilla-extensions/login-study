@@ -10,8 +10,10 @@ const sendTelemetry = async () => {
   const browser_startup_page = await browser.prefs.getIntPref("browser.startup.page");
   const session_days_old = await browser.extendedTelemetry.daysSinceProcessStart();
   const profile_days_old = await browser.extendedTelemetry.profileAge();
-  const logins_accounts = await browser.extendedTelemetry.hasLogins();
-  const logins_accounts_uses_per_month = await browser.extendedTelemetry.timesUsedPerMonth();
+  const logins_accounts = await browser.extendedTelemetry.hasGoogleAccountsLogin();
+  if (logins_accounts) {
+    const logins_accounts_uses_per_month = await browser.extendedTelemetry.timesUsedPerMonth();
+  }
   const { google_accounts_cookie_present, google_accounts_cookie_days_old } = await browser.extendedTelemetry.hasGoogleCookieAndAge();
   const has_allow_cookie_exceptions = await browser.extendedTelemetry.hasAllowCookieExceptions();
   const has_block_cookie_exceptions = await browser.extendedTelemetry.hasBlockCookieExceptions();
