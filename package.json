@@ -1,7 +1,7 @@
 {
-  "name": "normandy-nextgen-study-example",
-  "version": "0.3.0",
-  "description": "Demonstrates how to make a 2019-style Normandy add-on study",
+  "name": "login-telemetry-study",
+  "version": "1.0.0",
+  "description": "Collects data to see if a user is being accidentally logged out.",
   "private": true,
   "license": "MPLv2",
   "scripts": {

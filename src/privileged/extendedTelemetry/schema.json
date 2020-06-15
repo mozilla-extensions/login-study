@@ -4,23 +4,23 @@
     "description": "Get extended telemetry information",
     "functions": [
       {
-        "name": "msSinceProcessStart",
+        "name": "daysSinceProcessStart",
         "type": "function",
-        "description": "Returns time in ms session has been active",
+        "description": "Returns time in days this session has been active.",
         "async": true,
         "parameters": []
       },
       {
         "name": "profileAge",
         "type": "function",
-        "description": "Returns age in ms of the profile",
+        "description": "Returns age in in days of the profile.",
         "async": true,
         "parameters": []
       },
       {
-        "name": "hasLogins",
+        "name": "hasGoogleAccountsLogin",
         "type": "function",
-        "description": "Returns a boolean indicating if the user has a Google account login saved",
+        "description": "Returns a boolean indicating if the user has a Google account login saved.",
         "async": true,
         "parameters": []
       },
@@ -32,9 +32,9 @@
         "parameters": []
       },
       {
-        "name": "isLoggedInWithGoogle",
+        "name": "hasGoogleCookieAndAge",
         "type": "function",
-        "description": "Returns a boolean indicating if the user has a cookie implying they are currently logged into Google.",
+        "description": "Returns an object containing a boolean indicating if the user has a cookie implying they are currently logged into Google, and containing the age of that cookie.",
         "async": true,
         "parameters": []
       },
@@ -77,6 +77,34 @@
         "name": "defaultPrivateSearchEngineIsGoogle",
         "type": "function",
         "description": "Returns boolean indicating if Google is the default private search engine.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "countVisitsToAccountsPage",
+        "type": "function",
+        "description": "Average of how often this user visits the Google account login/signup domain each 28 days (1 month), rounded to 1 decimal.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "searchWithAdsPlusClick",
+        "type": "function",
+        "description": "Returns an object containing booleans 'with_ads' and 'ad_clicks' indicating if this user has executed a search with ads and clicked an ad in the past 14 days.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "getOldestHistoryAgeInDays",
+        "type": "function",
+        "description": "Returns the total number of days old the oldest history entry is, 0 if same day, null if no history.",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "getAverageHistoryDaysPerMonth",
+        "type": "function",
+        "description": "Returns the average days in a month which have a history entry.",
         "async": true,
         "parameters": []
       }
