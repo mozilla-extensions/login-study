@@ -8,7 +8,6 @@ const { TelemetryEnvironment } = ChromeUtils.import("resource://gre/modules/Tele
 const { AddonManager } =  ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
 const { PlacesUtils } = ChromeUtils.import("resource://gre/modules/PlacesUtils.jsm");
 const { TelemetryArchive } = ChromeUtils.import("resource://gre/modules/TelemetryArchive.jsm");
-const { LoginHelper } = ChromeUtils.import("resource://gre/modules/LoginHelper.jsm");
 
 // One month here is 28 days
 const MILLISECONDS_PER_MONTH = 28 * 24 * 60 * 60 * 1000;
@@ -64,7 +63,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
         },
 
         async timesUsedPerMonth() {
-          if (LoginHelper.isMasterPasswordSet()) {
+          if (!Services.logins.isLoggedIn) {
             return 0.0;
           }
           const logins = Services.logins.findLogins("https://accounts.google.com", "", null).concat(Services.logins.findLogins("http://accounts.google.com", "", null));

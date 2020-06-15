@@ -72,7 +72,7 @@ await AddonStudies.add({
   "privacy_clear_on_shutdown_cookies": true,
   "network_cookie_cookie_behavior": 4,
   "browser_startup_page": 0,
-  "session_days_old": null,
+  "session_days_old": 0,
   "profile_days_old": 0,
   "logins_accounts": false,
   "logins_accounts_uses_per_month": 0,
