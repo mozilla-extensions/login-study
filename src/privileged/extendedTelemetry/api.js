@@ -83,6 +83,10 @@ this.extendedTelemetry = class extends ExtensionAPI {
           const currentTimestamp = Date.now();
           const cookies = Services.cookies.getCookiesFromHost("google.com", {}).filter(c => c.host === "accounts.google.com");
           const googleCookie = cookies.find((cookie) => {
+            // if the cookie is already expired, throw it away.
+            if (!cookie.isSession && (cookie.expiry * 1000 < Date.now())) {
+              return false;
+            }
             // LSID cookie exists when a user is logged in to any Google product.
             // Note: this cookie can be deleted (perhaps through other means, excluding a log out action) and the user will not be
             // logged out of any google product, but will have to reauthenticate if they log into a different google product.
