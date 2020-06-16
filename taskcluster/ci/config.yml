@@ -8,12 +8,12 @@ taskgraph:
     decision-parameters: 'xpi_taskgraph.parameters:get_decision_parameters'
     repositories:
         xpi:
-            name: "XPI source"
-            project-regex: '(?!xpi-template)'
+            name: "Login Study"
+            project-regex: '(?!login-study)'
         template:
-            name: "XPI template"
-            project-regex: 'xpi-template'
-            default-repository: https://github.com/mozilla-extensions/xpi-template
+            name: "Login Study"
+            project-regex: 'login-study'
+            default-repository: https://github.com/mozilla-extensions/login-study
             default-ref: master
             type: git
 
