@@ -125,9 +125,13 @@ async function buildAddon({ variant, versionSuffix }) {
     "web-ext-artifacts",
     `${webExtOutputName}-${computedVersion}.zip`,
   );
+  // const newFilePath = join(
+  //   "web-ext-artifacts",
+  //   `${packageJson.name}-${variant}@mozilla.org-${computedVersion}.xpi`,
+  // );
   const newFilePath = join(
     "web-ext-artifacts",
-    `${packageJson.name}-${variant}@mozilla.org-${computedVersion}.xpi`,
+    `${packageJson.name}.xpi`,
   );
   await fsp.rename(oldFilePath, newFilePath);
   console.log(`Renamed ${oldFilePath} to ${newFilePath}`);

@@ -1,5 +1,5 @@
 {
-  "name": "login-telemetry-study",
+  "name": "login-study",
   "version": "1.0.0",
   "description": "Collects data to see if a user is being accidentally logged out.",
   "private": true,
