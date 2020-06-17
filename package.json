@@ -1,7 +1,7 @@
 {
   "name": "login-study",
   "version": "1.0.0",
-  "description": "Collects data to see if a user is being accidentally logged out.",
+  "description": "This study will help us understand if Firefox users are being signed out of their Google accounts unintentionally. Learning about the Google accounts login state for our users will help us deliver the an optimal experience in Firefox.",
   "private": true,
   "license": "MPLv2",
   "scripts": {
