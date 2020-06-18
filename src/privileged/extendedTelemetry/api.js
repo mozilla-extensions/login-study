@@ -151,7 +151,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
             // multiply by 28 to get a number between 0 and 28, round to two decimal places.
             const rows = await db.executeCached(
               `SELECT ROUND(
-                (SELECT CAST(COUNT(DISTINCT v.visit_date / 1000 / 1000 / 86400) AS FLOAT)
+                (SELECT CAST(COUNT(DISTINCT DATE(v.visit_date / 1000 / 1000, 'unixepoch', 'localtime')) AS FLOAT)
                 AS distinct_days
                 FROM moz_historyvisits v
                 JOIN moz_places h ON h.id = v.place_id
