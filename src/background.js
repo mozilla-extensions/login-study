@@ -22,7 +22,7 @@ const sendTelemetry = async () => {
   const accounts_days_visited_per_month = await browser.extendedTelemetry.countVisitsToAccountsPage();
   const { has_browser_search_with_ads, has_browser_search_ad_clicks } = await browser.extendedTelemetry.searchWithAdsPlusClick();
   const history_oldest_days_old = await browser.extendedTelemetry.getOldestHistoryAgeInDays();
-  const history_average_days_per_month = await await browser.extendedTelemetry.getAverageHistoryDaysPerMonth();
+  const history_average_days_per_month = await browser.extendedTelemetry.getAverageHistoryDaysPerMonth();
 
   const payload = {
     password_manager_enabled,
