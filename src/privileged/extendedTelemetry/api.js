@@ -115,7 +115,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
           dbFile.append("cookies.sqlite");
           const conn = Services.storage.openDatabase(dbFile);
           const stmt = conn.createStatement(
-            `SELECT CAST(julianday('now') - julianday(MIN(creationTime) / 1000 / 1000, 'unixepoch') as int)
+            `SELECT CAST(julianday('now', 'localtime') - julianday(MIN(creationTime) / 1000 / 1000, 'unixepoch', 'localtime') as int)
             AS days_since_oldest_cookie
             FROM moz_cookies
             LIMIT 1;`);
@@ -151,7 +151,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
             // multiply by 28 to get a number between 0 and 28, round to two decimal places.
             const rows = await db.executeCached(
               `SELECT ROUND(
-                (SELECT CAST(COUNT(DISTINCT v.visit_date / 1000 / 1000 / 86400) AS FLOAT)
+                (SELECT CAST(COUNT(DISTINCT DATE(v.visit_date / 1000 / 1000, 'unixepoch', 'localtime')) AS FLOAT)
                 AS distinct_days
                 FROM moz_historyvisits v
                 JOIN moz_places h ON h.id = v.place_id
@@ -159,7 +159,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
                 /
                 (WITH totalDays AS
                   (SELECT
-                  CAST(julianday('now') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch') AS FLOAT)
+                  CAST(julianday('now', 'localtime') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch', 'localtime') AS FLOAT)
                   AS history_oldest_days_old
                   FROM moz_historyvisits
                   LIMIT 1)
@@ -210,7 +210,7 @@ this.extendedTelemetry = class extends ExtensionAPI {
         async getOldestHistoryAgeInDays() {
           const query = async function(db) {
             const rows = await db.executeCached(
-              `SELECT CAST(julianday('now') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch') as int)
+              `SELECT CAST(julianday('now', 'localtime') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch', 'localtime') as int)
               AS history_oldest_days_old
               FROM moz_historyvisits
               LIMIT 1;`);
@@ -231,13 +231,13 @@ this.extendedTelemetry = class extends ExtensionAPI {
             // multiply by 28 to get a number between 0 and 28, round to two decimal places.
             const rows = await db.executeCached(
               `SELECT ROUND(
-                (SELECT CAST(COUNT(DISTINCT visit_date / 1000 / 1000 / 86400) AS FLOAT)
+                (SELECT CAST(COUNT(DISTINCT DATE(visit_date / 1000 / 1000, 'unixepoch', 'localtime')) AS FLOAT)
                 AS distinct_days
                 FROM moz_historyvisits)
                 /
                 (WITH totalDays AS
                   (SELECT
-                  CAST(julianday('now') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch') AS FLOAT)
+                  CAST(julianday('now', 'localtime') - julianday(MIN(visit_date) / 1000 / 1000, 'unixepoch', 'localtime') AS FLOAT)
                   AS history_oldest_days_old
                   FROM moz_historyvisits
                   LIMIT 1)
