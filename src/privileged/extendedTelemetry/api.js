@@ -68,7 +68,9 @@ this.extendedTelemetry = class extends ExtensionAPI {
           }
           const logins = Services.logins.findLogins("https://accounts.google.com", "", null).concat(Services.logins.findLogins("http://accounts.google.com", "", null));
           if (logins.length) {
-            const mostUsedLogin = logins.reduce((prev, current) => { (prev.timesUsed > current.timesUsed) ? prev : current; });
+            const mostUsedLogin = logins.reduce((prev, current) => {
+              return (prev.timesUsed > current.timesUsed) ? prev : current;
+            });
             return msFrequencyToMonths(mostUsedLogin.timesUsed / (Date.now() - mostUsedLogin.timeCreated));
           }
           return 0.0;
