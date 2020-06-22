@@ -36,7 +36,7 @@ build, and the preference `extensions.legacy.enabled` must be set to true.
 - Note: `browser.normandyAddonStudy.endStudy` will throw an error unless this addon has been installed through Normandy.
 
 ## Example Payload on a New Profile
-```
+```json
 {
   "password_manager_enabled": false,
   "browser_privatebrowsing_autostart": false,
@@ -125,6 +125,7 @@ build, and the preference `extensions.legacy.enabled` must be set to true.
   "accounts_days_visited_per_month": 0,
   "has_browser_search_with_ads": false,
   "has_browser_search_ad_clicks": false,
+  "history_average_days_per_month": 0,
   "history_oldest_days_old": null
 }
 ```
